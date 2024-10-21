@@ -1,5 +1,3 @@
-DOMAIN="x.com"
-
 # Run the following command to install the required tools
 chmod +x installProg.sh
 ./installProg.sh
