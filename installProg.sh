@@ -94,3 +94,5 @@ then
 else
     echo "qsreplace is already installed"
 fi
+
+# https://github.com/SirBugs/endext
