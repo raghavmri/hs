@@ -95,4 +95,21 @@ else
     echo "qsreplace is already installed"
 fi
 
+# BXSS
+if ! command -v bxss &> /dev/null
+then
+    go install github.com/ethicalhackingplayground/bxss@latest
+else
+    echo "BXSS is already installed"
+fi
+
+# Subzy
+if ! command -v subzy &> /dev/null
+then
+    go install -v github.com/PentestPad/subzy@latest
+else
+    echo "Subzy is already installed"
+fi
+
+
 # https://github.com/SirBugs/endext
