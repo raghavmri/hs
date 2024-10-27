@@ -111,5 +111,6 @@ else
     echo "Subzy is already installed"
 fi
 
+pip3 install arjun
 
 # https://github.com/SirBugs/endext
