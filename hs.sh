@@ -27,14 +27,15 @@ cat assetfinder.txt subfinder.txt | sort -u > subdomains.txt
 echo -e "\033[0;32mRunning httpx...\033[0m"
 httpx -l assetfinder.txt -o httpx.txt
 
-# Use katana to discover endpoints and filter out unwanted files
+# Use katana, waybackurls, waymore to discover endpoints and filter out unwanted files
 echo -e "\033[0;32mRunning katana for endpoint discovery...\033[0m"
 katana -u httpx.txt -o katana.txt -d 5 -jc -fx -ef wolf,css,png,svg,jpg,woff2,jpeg,gif
-cat httpx.txt | waybackurls > waybackurls.txt
+# cat httpx.txt | waybackurls > waybackurls.txt
+waymore -urls httpx.txt -o waymore.txt
 
 # Combine katana and waybackurls outputs for unique endpoints
 echo -e "\033[0;32mCombining endpoint lists...\033[0m"
-cat katana.txt waybackurls.txt | sort -u > endpoints.txt
+cat katana.txt waymore.txt | sort -u > endpoints.txt
 
 # Extract parameters from endpoints
 echo -e "\033[0;32mExtracting parameters from endpoints...\033[0m"
