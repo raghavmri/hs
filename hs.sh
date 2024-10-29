@@ -19,19 +19,29 @@ assetfinder --subs-only $DOMAIN > assetfinder.txt
 echo -e "\033[0;32mRunning subfinder...\033[0m"
 subfinder -d $DOMAIN -all -recursive -o subfinder.txt
 
+# Find subdomains using sublist3r
+git clone https://github.com/aboul3la/Sublist3r.git
+cd Sublist3r
+sudo pip install -r requirements.txt
+sudo apt-get install python-dnspython python-argparse -y
+python sublist3r.py -d $DOMAIN -o sublist3r.txt
+cp sublist3r.txt ../sublist.txt
+cd ..
+sudo rm -rf Sublist3r
+
 # Merge and sort subdomain lists
 echo -e "\033[0;32mMerging subdomain lists...\033[0m"
-cat assetfinder.txt subfinder.txt | sort -u > subdomains.txt
+cat assetfinder.txt subfinder.txt sublist.txt | sort -u > subdomains.txt
 
 # Probe for live subdomains using httpx
 echo -e "\033[0;32mRunning httpx...\033[0m"
-httpx -l assetfinder.txt -o httpx.txt
+httpx -l subdomains.txt -o httpx.txt
 
 # Use katana, waybackurls, waymore to discover endpoints and filter out unwanted files
 echo -e "\033[0;32mRunning katana for endpoint discovery...\033[0m"
 katana -u httpx.txt -o katana.txt -d 5 -jc -fx -ef wolf,css,png,svg,jpg,woff2,jpeg,gif
 # cat httpx.txt | waybackurls > waybackurls.txt
-waymore -urls httpx.txt -o waymore.txt
+cat httpx.txt | waymore -oU waymore.txt
 
 # Combine katana and waybackurls outputs for unique endpoints
 echo -e "\033[0;32mCombining endpoint lists...\033[0m"
@@ -73,3 +83,5 @@ echo -e "\033[0;32mChecking for subdomain takeover...\033[0m"
 subzy run --targets subdomains.txt
 
 # -ps -pss waybackarchive,commoncrawl,alienvault
+
+
