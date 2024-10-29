@@ -113,4 +113,6 @@ fi
 
 pip3 install arjun
 pip3 install waymore
+
+go install github.com/MrEmpy/mantra@latest
 # https://github.com/SirBugs/endext

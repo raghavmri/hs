@@ -45,21 +45,22 @@ cat httpx.txt | waymore -oU waymore.txt
 
 # Combine katana and waybackurls outputs for unique endpoints
 echo -e "\033[0;32mCombining endpoint lists...\033[0m"
-cat katana.txt waymore.txt | sort -u > endpoints.txt
+cat katana.txt waymore.txt  | sort -u > endpoints.txt
 
 # Extract parameters from endpoints
 echo -e "\033[0;32mExtracting parameters from endpoints...\033[0m"
-cat endpoints.txt | grep '=' | tee param.txt
+grep '=' endpoints.txt | tee param.txt
 cat endpoints.txt | gau | tee urls.txt
+
+# Separating JS & CSS files from endpoints and removing them from endpoints.txt
+echo -e "\033[0;32mSeparating JS...\033[0m"
+grep -E '\.json|\.js' endpoints.txt > js_enpoints.txt
+
 
 # Run nuclei for vulnerability scanning
 echo -e "\033[0;32mRunning nuclei vulnerability scan...\033[0m"
 nuclei -list httpx.txt -t $HOME/nuclei-templates/vulnerabilities -t $HOME/nuclei-templates/cves -t $HOME/nuclei-templates/exposures
 
-# Separating JS & CSS files from endpoints and removing them from endpoints.txt
-echo -e "\033[0;32mSeparating JS and CSS files...\033[0m"
-cat endpoints.txt | grep -iE '\.js$' | tee js_files.txt
-cat endpoints.txt | grep -iE '\.css$' | tee css_files.txt
 
 # Finding XSS by not including JS & CSS files
 echo -e "\033[0;32mRunning dalfox for XSS detection...\033[0m"
@@ -72,15 +73,20 @@ nuclei -list target.txt -tags lfi
 
 # Finding Open Redirects
 echo -e "\033[0;32mSetting up for open redirect checks...\033[0m"
-git clone https://github.com/faiyazahmad07/WEBSTER.git
-cd WEBSTER
+# git clone https://github.com/faiyazahmad07/WEBSTER.git
+# cd WEBSTER
 
 # Echo each URL in urls.txt to the python script as a single URL
 # python3 webster.py -u urls.txt -p payload.txt -t 2
 
-# Checking For Subdomain Takeover
+# Checking For Subdomain Takeover Using Subzy
 echo -e "\033[0;32mChecking for subdomain takeover...\033[0m"
 subzy run --targets subdomains.txt
+
+# Checking for any API keys in JS files
+
+
+
 
 # -ps -pss waybackarchive,commoncrawl,alienvault
 
