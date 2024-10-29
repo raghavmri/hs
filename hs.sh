@@ -24,7 +24,7 @@ git clone https://github.com/aboul3la/Sublist3r.git
 cd Sublist3r
 sudo pip install -r requirements.txt
 sudo apt-get install python-dnspython python-argparse -y
-python sublist3r.py -d $DOMAIN -o sublist3r.txt
+python3 sublist3r.py -d $DOMAIN -o sublist3r.txt
 cp sublist3r.txt ../sublist.txt
 cd ..
 sudo rm -rf Sublist3r
@@ -50,7 +50,7 @@ cat katana.txt waymore.txt  | sort -u > endpoints.txt
 # Extract parameters from endpoints
 echo -e "\033[0;32mExtracting parameters from endpoints...\033[0m"
 grep '=' endpoints.txt | tee param.txt
-cat endpoints.txt | gau | tee urls.txt
+cat endpoints.txt | gau -t 50 -o urls.txt
 
 # Separating JS & CSS files from endpoints and removing them from endpoints.txt
 echo -e "\033[0;32mSeparating JS...\033[0m"
